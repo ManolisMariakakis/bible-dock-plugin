@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verse Page Variables | Bible</title>
+    <script src="js/jquery.min.js"></script>
+    <style>
+        * {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #f4f4f4;
+            border: 2px solid #ccc;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            font-family: Arial, sans-serif;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        li.two-columns label:nth-child(2):last-child {
+            grid-column: span 2;
+        }
+
+        li.one-column label:nth-child(1):last-child {
+            grid-column: span 3;
+        }
+
+        li:hover {
+            background-color: #eaeaea;
+        }
+
+        .wide-input {
+            text-align: right;
+            width: 40px;
+        }
+
+        .top-label {
+            grid-column: 1 / -1;
+            padding: 0;
+            text-align: left;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="top-label">Verse Page Variables</div>
+    <form id="cssForm">   
+        <ul>
+            <li>
+                <div class="top-label">Generic</div>
+                <label>Font Family <select id="fontFamily" name="fontFamily">
+                        <option value="Helvetica">Helvetica</option>
+                        <option value="Arial">Arial</option>
+                        <option value="Verdana">Verdana</option>
+                        <option value="Tahoma">Tahoma</option>
+                        <option value="sans-serif">sans-serif</option>
+                        <option value="Courier New">Courier New</option>
+                        <option value="Times New Roman">Times New Roman</option>
+                        <option value="Roboto">Roboto</option>
+                    </select>
+                </label><br><br>
+                <label>Width <input type="number" id="sectionWidth" value="800" class="wide-input"></label><br><br>
+                <label>Height <input type="number" id="sectionHeight" value="400" class="wide-input"></label><br><br>
+                <label>Margin Bottom <input type="number" id="containerMarginBottom" value="20"
+                        class="wide-input"></label><br><br>
+                <label>Margin Left <input type="number" id="containerMarginLeft" value="20" class="wide-input"></label>
+
+            </li>
+            <li>
+                <div class="top-label">Title</div>
+                <label>Height <input type="number" id="titleHeight" value="50" class="wide-input"></label><br><br>
+                <label>Background Color <input type="color" id="titleBackgroundColor" value="#fffff2"><input type="checkbox" id="titleTransparent"> Transparent</label><br><br>
+                <label>Color <input type="color" id="titleColor" value="#000000"></label><br><br>
+                <label>Padding Top <input type="number" id="titlePaddingTop" value="20"
+                        class="wide-input"></label><br><br>
+                <label>Padding Left <input type="number" id="titlePaddingLeft" value="15"
+                        class="wide-input"></label><br><br>
+                <label>Padding Bottom <input type="number" id="titlePaddingBottom" value="15"
+                        class="wide-input"></label><br><br>
+                <label>Font Size <input type="number" id="titleFontSize" value="22" class="wide-input"></label><br><br>
+                <label>Font Weight <select id="titleFontWeight" name="titleFontWeight">
+                        <option value="100">100 (Thin)</option>
+                        <option value="200">200 (Extra Light)</option>
+                        <option value="300">300 (Light)</option>
+                        <option value="400">400 (Normal)</option>
+                        <option value="500">500 (Medium)</option>
+                        <option value="600">600 (Semi Bold)</option>
+                        <option value="700" selected>700 (Bold)</option>
+                        <option value="800">800 (Extra Bold)</option>
+                        <option value="900">900 (Black)</option>
+                    </select>
+
+                </label><br><br>
+                <label>Border <input type="number" id="titleBorder" value="1" class="wide-input"></label><br><br>
+                <label>Border Color <input type="color" id="titleBorderColor" value="#000000"></label>
+            </li>
+            <li>
+                <div class="top-label">Verse</div>
+                <label>Background Color <input type="color" id="chapterBackgroundColor" value="#fffff2"><input type="checkbox" id="chapterTransparent"> Transparent</label><br><br>
+                <label>Color <input type="color" id="chapterColor" value="#000000"></label><br><br>
+                <label>Padding Top <input type="number" id="chapterPaddingTop" value="15"
+                        class="wide-input"></label><br><br>
+                <label>Padding Left <input type="number" id="chapterPaddingLeft" value="15"
+                        class="wide-input"></label><br><br>
+                <label>Padding Right <input type="number" id="chapterPaddingRight" value="10"
+                        class="wide-input"></label><br><br>
+                <label>Font Size <input type="number" id="chapterFontSize" value="22"
+                        class="wide-input"></label><br><br>
+                <label>Font Weight <select id="chapterFontWeight" name="chapterFontWeight">
+                        <option value="100">100 (Thin)</option>
+                        <option value="200">200 (Extra Light)</option>
+                        <option value="300">300 (Light)</option>
+                        <option value="400">400 (Normal)</option>
+                        <option value="500">500 (Medium)</option>
+                        <option value="600">600 (Semi Bold)</option>
+                        <option value="700" selected>700 (Bold)</option>
+                        <option value="800">800 (Extra Bold)</option>
+                        <option value="900">900 (Black)</option>
+                    </select>
+                </label><br><br>
+                <label>Border <input type="number" id="chapterBorder" value="1" class="wide-input"></label><br><br>
+                <label>Border Color <input type="color" id="chapterBorderColor" value="#000000"></label><br><br>
+                <label>Line Height <input type="number" id="chapterLineHeight" value="15" class="wide-input"></label>
+            </li>
+            <li>
+                <div class="top-label">Verse Number</div>
+                <label>Font Size <input type="number" id="noFontSize" value="18" class="wide-input"></label><br><br>
+                <label>Font Weight <select id="noFontWeight" name="noFontWeight">
+                        <option value="100">100 (Thin)</option>
+                        <option value="200">200 (Extra Light)</option>
+                        <option value="300">300 (Light)</option>
+                        <option value="400">400 (Normal)</option>
+                        <option value="500">500 (Medium)</option>
+                        <option value="600">600 (Semi Bold)</option>
+                        <option value="700" selected>700 (Bold)</option>
+                        <option value="800">800 (Extra Bold)</option>
+                        <option value="900">900 (Black)</option>
+                    </select>
+                </label><br><br>
+                <label>Background Color <input type="color" id="noBackgroundColor" value="#fffff2"><input type="checkbox" id="noTransparent"> Transparent</label><br><br>
+                <label>Color <input type="color" id="noColor" value="#ff0000"></label><br><br>
+                <label>Padding Right <input type="number" id="noPaddingRight" value="3" class="wide-input"></label>
+            </li>
+        </ul>
+    </form>
+
+    <script>
+
+        function updateVariables() {
+            var titleTransparent;
+            if (document.getElementById('titleTransparent').checked) {
+                titleTransparent = 'rgba(0, 0, 0, 0)';
+            } else {
+                titleTransparent = document.getElementById('titleBackgroundColor').value;
+            };
+            var chapterTransparent;
+            if (document.getElementById('chapterTransparent').checked) {
+                chapterTransparent = 'rgba(0, 0, 0, 0)';
+            } else {
+                chapterTransparent = document.getElementById('chapterBackgroundColor').value;
+            };
+            if (document.getElementById('noTransparent').checked) {
+                noTransparent = 'rgba(0, 0, 0, 0)';
+            } else {
+                noTransparent = document.getElementById('noBackgroundColor').value
+            };
+            const root = document.documentElement;
+            var a = JSON.stringify([
+                document.getElementById('fontFamily').value,
+                document.getElementById('sectionWidth').value,
+                document.getElementById('sectionHeight').value,
+                document.getElementById('containerMarginBottom').value,
+                document.getElementById('containerMarginLeft').value,
+                document.getElementById('titleHeight').value,
+                titleTransparent,
+                document.getElementById('titleColor').value,
+                document.getElementById('titlePaddingTop').value,
+                document.getElementById('titlePaddingLeft').value,
+                document.getElementById('titlePaddingBottom').value,
+                document.getElementById('titleFontWeight').value,
+                document.getElementById('titleBorder').value,
+                document.getElementById('titleBorderColor').value,
+                document.getElementById('titleFontSize').value,
+                chapterTransparent,
+                document.getElementById('chapterColor').value,
+                document.getElementById('chapterPaddingTop').value,
+                document.getElementById('chapterPaddingLeft').value,
+                document.getElementById('chapterPaddingRight').value,
+                document.getElementById('chapterFontSize').value,
+                document.getElementById('chapterFontWeight').value,
+                document.getElementById('chapterBorder').value,
+                document.getElementById('chapterBorderColor').value,
+                document.getElementById('chapterLineHeight').value,
+                document.getElementById('noFontSize').value,
+                document.getElementById('noColor').value,
+                document.getElementById('noFontWeight').value,
+                noTransparent,
+                document.getElementById('noPaddingRight').value]);
+            localStorage.setItem('BiblecssVerse', a);
+            const broadcastChannel = new BroadcastChannel('crossVerseVariables');
+            broadcastChannel.postMessage({ parameters: a });
+
+
+
+        }
+
+        document.querySelectorAll('#cssForm input').forEach(input => {
+            input.addEventListener('input', updateVariables);
+        });
+        document.querySelectorAll('#cssForm select').forEach(input => {
+            input.addEventListener('change', updateVariables);
+        });
+
+        $(document).ready(function () {
+
+            const savedVariables = JSON.parse(localStorage.getItem('BiblecssVerse'));
+
+            document.getElementById('fontFamily').value = savedVariables[0];
+            document.getElementById('sectionWidth').value = savedVariables[1];
+            document.getElementById('sectionHeight').value = savedVariables[2];
+            document.getElementById('containerMarginBottom').value = savedVariables[3];
+            document.getElementById('containerMarginLeft').value = savedVariables[4];
+            document.getElementById('titleHeight').value = savedVariables[5];
+            var titleTransparent = savedVariables[6];
+            if(titleTransparent=='rgba(0, 0, 0, 0)'){
+                document.getElementById('titleBackgroundColor').value = '#000000';
+                document.getElementById('titleTransparent').checked = true;
+            }else{
+                document.getElementById('titleBackgroundColor').value = savedVariables[6];
+                document.getElementById('titleTransparent').checked = false;
+            }
+            document.getElementById('titleColor').value = savedVariables[7];
+            document.getElementById('titlePaddingTop').value = savedVariables[8];
+            document.getElementById('titlePaddingLeft').value = savedVariables[9];
+            document.getElementById('titlePaddingBottom').value = savedVariables[10];
+            document.getElementById('titleFontWeight').value = savedVariables[11];
+            document.getElementById('titleBorder').value = savedVariables[12];
+            document.getElementById('titleBorderColor').value = savedVariables[13];
+            document.getElementById('titleFontSize').value = savedVariables[14];
+            var chapterTransparent = savedVariables[15];
+            if(chapterTransparent=='rgba(0, 0, 0, 0)'){
+                document.getElementById('chapterBackgroundColor').value = '#000000';
+                document.getElementById('chapterTransparent').checked = true;
+            }else{
+                document.getElementById('chapterBackgroundColor').value = savedVariables[15];
+                document.getElementById('chapterTransparent').checked = false;
+            }
+            document.getElementById('chapterColor').value = savedVariables[16];
+            document.getElementById('chapterPaddingTop').value = savedVariables[17];
+            document.getElementById('chapterPaddingLeft').value = savedVariables[18];
+            document.getElementById('chapterPaddingRight').value = savedVariables[19];
+            document.getElementById('chapterFontSize').value = savedVariables[20];
+            document.getElementById('chapterFontWeight').value = savedVariables[21];
+            document.getElementById('chapterBorder').value = savedVariables[22];
+            document.getElementById('chapterBorderColor').value = savedVariables[23];
+            document.getElementById('chapterLineHeight').value = savedVariables[24];
+            document.getElementById('noFontSize').value = savedVariables[25];
+            document.getElementById('noColor').value = savedVariables[26];
+            document.getElementById('noFontWeight').value = savedVariables[27];
+            var noTransparent = savedVariables[28];
+            if(noTransparent=='rgba(0, 0, 0, 0)'){
+                document.getElementById('noBackgroundColor').value = '#000000';
+                document.getElementById('noTransparent').checked = true;
+            }else{
+                document.getElementById('noBackgroundColor').value = savedVariables[28];
+                document.getElementById('noTransparent').checked = false;
+            }
+            document.getElementById('noPaddingRight').value = savedVariables[29];
+
+        });
+
+
+    </script>
+
+</body>
+
+</html>

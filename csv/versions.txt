@@ -1,0 +1,5 @@
+TGV,tgv_verses.csv
+ΒΑΜΒΑΣ,vamvas_verses.csv
+ΦΙΛΟΣ,filos_verses.csv
+KJV,KJV_verses.csv
+TR,TR_verses.csv

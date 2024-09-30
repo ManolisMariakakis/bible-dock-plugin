@@ -1,0 +1,196 @@
+<html>
+
+<head>
+    <title>From Verse | Bible</title>
+    <meta name="description" content="Copyright Manolis dot eu">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <style>
+        * {
+            font-family: Arial, Helvetica, Geneva, sans-serif;
+            BACKGROUND-COLOR: #f2f2f2;
+            font-size: 12px;
+        }
+
+        .n1 {
+            font-size: 56px;
+            color: #000000;
+            FONT-WEIGHT: bold;
+            BACKGROUND-COLOR: #f2f2f2;
+            PADDING-LEFT: 20px;
+        }
+
+        td {
+            line-height: 18px
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .top-label {
+            grid-column: 1 / -1;
+            padding: 0;
+            text-align: left;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            display:none;
+        }
+
+        a {
+            padding: 2px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .selected-green {
+            background-color: green;
+            color: white;
+        }
+
+        .selected-yellow {
+            background-color: yellow;
+            color: black;
+        }
+    </style>
+    </style>
+    <script src="js/jquery.min.js"></script>
+</head>
+
+<body>
+    
+    <div id="cno" class="top-label"></div>
+    <div class="top-label">From verse</div>
+    <div id="linkContainer"></div>
+    <div class="top-label">Verses range</div>
+    <div id="linkContainer2"></div>
+
+    <script>
+        var version = "";
+        var versionname = "";
+        var bookname = "";
+        var book = "";
+        var chapter = "";
+
+        $(document).ready(function () {
+            PrepareList();
+            PrepareList2();
+
+            let firstClick = null; // Variable to store the first clicked anchor
+
+            $('#linkContainer2 a').click(function (event) {
+                event.preventDefault();
+
+                // If no previous click (first click case)
+                if (firstClick === null) {
+                    // Clear any previous selection (yellow or green)
+                    $('#linkContainer2 a').removeClass('selected-green selected-yellow');
+
+                    // Mark the clicked anchor as green
+                    firstClick = $(this);
+                    firstClick.addClass('selected-green');
+                } else {
+                    // Second click: find the range between first and second anchors
+                    let secondClick = $(this);
+                    let firstIndex = $('#linkContainer2 a').index(firstClick);
+                    let secondIndex = $('#linkContainer2 a').index(secondClick);
+
+                    // Ensure firstIndex is smaller
+                    if (firstIndex > secondIndex) {
+                        [firstIndex, secondIndex] = [secondIndex, firstIndex];
+                    }
+
+                    // Highlight the range
+                    selectedRange = [];
+                    $('#linkContainer2 a').slice(firstIndex, secondIndex + 1).each(function (index, anchor) {
+                        $(anchor).addClass('selected-yellow').removeClass('selected-green');
+                        selectedRange.push($(anchor).text());
+                    });
+
+                    // Reset the firstClick variable
+                    firstClick = null;
+
+                    const broadcastChannelGotoSelected = new BroadcastChannel('crossGoToSelected');
+                    broadcastChannelGotoSelected.postMessage({ gotoselected: selectedRange });
+
+                }
+            });
+        })
+
+        const broadcastChannelMaxverse = new BroadcastChannel('crossMaxverse');
+        broadcastChannelMaxverse.onmessage = function (event) {
+            $(".top-label").show();
+            version = event.data.version;
+            versionname = event.data.versionname
+            bookname = event.data.bookname;
+            book = event.data.book;
+            chapter = event.data.chapter;
+
+
+            var maxverse = event.data.maxverse;
+            var title = '[' + versionname + '] ' + bookname + ": " + chapter;
+            document.getElementById("cno").innerHTML = title;
+            var elements = document.querySelectorAll('a');
+            for (var i = 0; i < elements.length; i++) {
+                var d = elements[i].text;
+                if (parseInt(d) > maxverse) {
+                    elements[i].style.display = "none";
+                } else {
+                    elements[i].style.display = "";
+                }
+            }
+
+        }
+
+        function PrepareList() {
+
+            for (var i = 1; i <= 176; i++) {
+                var anchor = $('<a>', {
+                    text: i,
+                    href: '#',
+                    click: (function (verseNumber) {
+                        return function () {
+                            fgotoverse(verseNumber);
+                            return false;
+                        };
+                    })(i)
+                });
+                anchor.css('display', 'none');
+                $('#linkContainer').append(anchor);
+                $('#linkContainer').append(' ');
+            };
+
+        }
+
+        function PrepareList2() {
+
+            for (var i = 1; i <= 176; i++) {
+                var anchor = $('<a>', {
+                    text: i,
+                    href: '#',
+                    // click: (function (verseNumber) {
+                    //     return function () {
+                    //         fgotoverse(verseNumber);
+                    //         return false;
+                    //     };
+                    // })(i)
+                });
+                anchor.css('display', 'none');
+                $('#linkContainer2').append(anchor);
+                $('#linkContainer2').append(' ');
+            };
+
+        }
+
+        function fgotoverse(gotov) {
+            const broadcastChannelGoto = new BroadcastChannel('crossGoTo');
+            broadcastChannelGoto.postMessage({ gotov: gotov });
+
+            const broadcastChannelHistory = new BroadcastChannel('crossHistory');
+            broadcastChannelHistory.postMessage({ version: version, versionname: versionname, book: book, bookname: bookname, chapter: chapter, gotov: gotov });
+            // return false;
+        } 
+    </script>
+</BODY>
+
+</HTML>

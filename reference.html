@@ -1,0 +1,153 @@
+<HTML>
+    <HEAD>
+        <title>History | Bible</title>
+        <meta name="description" content="Copyright Manolis dot eu">
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<style>
+* {
+    font-family: Arial, Helvetica, Geneva, sans-serif;
+    BACKGROUND-COLOR: #f2f2f2;
+    font-size: 12px;
+}
+.n1 {
+    font-size: 56px;
+    color: #000000;
+    FONT-WEIGHT: bold;
+    BACKGROUND-COLOR: #f2f2f2;
+    PADDING-LEFT: 20px;
+}
+.cssmenu {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 5px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+        }
+td{line-height:18px}
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 4px;
+}
+a {text-decoration:none;}
+tr {border:1px solid black;}
+tr:hover {background-color: #ddd;}
+button {cursor: pointer;}
+tr:nth-child(even) {
+    background-color: #eee;
+}
+
+</style>
+
+    </HEAD>
+    <BODY>
+ 
+        <div class="cssmenu">&nbsp;</div>
+        <table id="myTable" style="margin-top:30px;border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <td><strong>#</strong></td>
+                    <td><strong>Reference</strong></td>
+                    <td><a href="javascript:clearTable();"><img src="images/deleteAll.png" style="width:16px;height:auto;"></a></td>
+                </tr>
+            <thead>
+            <tbody id="root">
+            
+            <tbody>
+        </table>
+
+
+            <script>
+
+                (function(d) {
+                           
+                    const broadcastChannelHistory = new BroadcastChannel('crossHistory');
+                    broadcastChannelHistory.onmessage = function (event) {
+                        var version = event.data.version;
+                        var versionname = event.data.versionname;
+                        var book = event.data.book;
+                        var bookname = event.data.bookname;
+                        var chapter = event.data.chapter;
+                        var gotov = event.data.gotov;
+                        manageData(version,versionname,book,bookname,chapter,gotov);
+                    }
+                
+                })(document);           
+                </script>
+<script>
+    let id="no";
+    selectData();
+    function manageData(version,versionname,book,bookname,chapter,gotov){
+        let name = `<a onclick="JavaScript:return moveto('${version}','${versionname}','${bookname}','${book}','${chapter}','${gotov}');" href="#">[${versionname}] ${bookname}:${chapter},${gotov}</a>`;
+        if(id=='no'){
+            let arr=getCrudData();
+            if(arr==null){
+                let data=[name];
+                setCrudData(data);
+            }else{
+                arr.push(name);
+                setCrudData(arr);
+            }
+        }else{
+            let arr=getCrudData();
+            arr[id]=name;
+            setCrudData(arr);
+        }
+        selectData();
+    }
+
+    function moveto(version,versionname,bookname,book,chapter,gotov){
+        const broadcastChannel = new BroadcastChannel('crossChapter');
+        broadcastChannel.postMessage({version: version, versionname: versionname, bookname: bookname, book: book, chapter: chapter, gotov: gotov});
+        return false;  
+    }
+    
+    function selectData(){
+        let arr=getCrudData();
+        if(arr!=null){
+            let html='';
+            let sno=1;
+            for(let k in arr){
+                html=html+`<tr><td>${sno}</td><td>${arr[k]}</td><td style="text-align:center;"><a href="javascript:void(0)" onclick="deleteData(${k})"><img src="images/delete.png" style="width:16px;height:auto;"></a></td></tr>`;
+                sno++;
+            }
+            document.getElementById('root').innerHTML=html;
+            
+        }
+    }
+    
+    function editData(rid){
+        id=rid;
+        let arr=getCrudData();
+        document.getElementById('name').value=arr[rid];
+    }
+    
+    function deleteData(rid){
+        let arr=getCrudData();
+        arr.splice(rid,1);
+        setCrudData(arr);
+        selectData();
+    }
+    
+    function getCrudData(){
+        let arr=JSON.parse(localStorage.getItem('BibleHistory'));
+        return arr;
+    }
+    
+    function setCrudData(arr){
+        localStorage.setItem('BibleHistory',JSON.stringify(arr));
+    }
+    
+    function clearTable(){
+        var x = document.getElementById("myTable").rows.length;
+        for(var i=x-1;i>=0;i--){
+            deleteData(i);
+        }
+        selectData();
+    }
+</script>
+</BODY>
+</HTML>

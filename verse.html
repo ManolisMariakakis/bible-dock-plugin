@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verse | Bible</title>
+
+    <style>
+        :root {
+            --font-family: Arial, Helvetica;
+            --section-width: 800px;
+            --section-height: 400px;
+            --container-margin-bottom: 20px;
+            --container-margin-left: 20px;
+            --title-height: 50px;
+            --title-background-color: #fffff2;
+            --title-color: black;
+            --title-padding-top: 20px;
+            --title-padding-left: 15px;
+            --title-padding-bottom: 15px;
+            --title-font-weight: 700;
+            --title-border: #000 1px solid;
+            --title-font-size: 22px;
+            --chapter-background-color: #fffff2;
+            --chapter-color: #000000;
+            --chapter-padding-top: 15px;
+            --chapter-padding-left: 15px;
+            --chapter-padding-right: 10px;
+            --chapter-font-size: 22px;
+            --chapter-font-weight: 700;
+            --chapter-border: 1px solid black;
+            --chapter-line-height: 15px;
+            --no-font-size: 18px;
+            --no-color: rgb(30, 6, 166);
+            --no-font-weight: 700;
+            --no-background-color: #fffff2;
+            --no-padding-right: 3px;
+        }
+
+
+        * {
+            font-family: var(--font-family);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: transparent;
+        }
+
+        .container {
+            height: var(--section-height);
+            width: var(--section-width);
+            margin-bottom: var(--container-margin-bottom);
+            margin-left: var(--container-margin-left);
+            background-color: transparent;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end; 
+            /*box-sizing: border-box;*/
+        }
+        .container2 {
+            width: 1200px;
+            height: 400px;
+            padding: 10px; /* Add padding to the container */
+            background-color: transparent; /* Keep the container background transparent */
+            display: flex;
+            flex-direction: column; /* Arrange items in a column */
+            justify-content: flex-end; /* Align items to the bottom */
+            font-family: Arial, sans-serif; /* Set font family */
+            font-size: 20px; /* Set font size */
+        }
+        .title {
+            height: var(--title-height);
+            padding-top: var(--title-padding-top);
+            padding-left: var(--title-padding-left);
+            padding-bottom: var(--title-padding-bottom);
+            text-align: cleft;
+            background-color: var(--title-background-color);
+            color: var(--title-color);
+            font-weight: var(--title-font-weight);
+            border: var(--title-border);
+            font-size: var(--title-font-size);
+            box-sizing: border-box;
+        }
+        .title2 {
+            height: 20px; /* Set fixed height */
+            padding: 10px; /* Only top and bottom padding */
+            text-align: cleft;
+            font-weight: bold; /* Optional styling */
+            background-color: #e0e0e0; /* Set a solid background color for footer */
+        }
+        .chapter {
+            width: 100%; 
+            overflow-y: auto; 
+            margin-bottom: 0px;
+            background-color: var(--chapter-background-color);
+            color: var(--chapter-color);
+            padding-top: var(--chapter-padding-top);
+            padding-left: var(--chapter-padding-left);
+            padding-right: var(--chapter-padding-right);
+            box-sizing: border-box;
+            font-size: var(--chapter-font-size);
+            font-weight: var(--chapter-font-weight);
+            border: var(--chapter-border);
+        }
+        .chapter2 {
+            width: 100%; /* Set width to 100% */
+            overflow-y: auto; /* Enable scrolling for content */
+            margin-bottom: 0px; /* Reserve space for footer */
+            background-color: #f0f0f0; /* Set background color for the text area */
+            padding: 10px; /* Only top and bottom padding */
+            box-sizing: border-box; /* Include padding in width */
+        }
+        .chapter div {
+            margin-bottom: var(--chapter-line-height);
+        }
+
+        .no {
+            font-size: var(--no-font-size);
+            color: var(--no-color);
+            font-weight: var(--no-font-weight);
+            background-color: var(--no-background-color);
+            padding-right: var(--no-padding-right);
+        }
+
+        html,
+        body {
+            scroll-behavior: smooth;
+            margin: 0;
+        }
+    </style>
+
+
+    <script src="js/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container" style="display:none" ;>
+        <div class="chapter"></div>
+        <div class="title"></div>
+    </div>
+    <script>
+
+        csvArray = [];
+        version = "";
+        versionname = "";
+
+
+
+        const broadcastChannel = new BroadcastChannel('crossChapter');
+        broadcastChannel.onmessage = function (event) {
+
+
+            function addChapter() {
+                $('.title').html('[' + versionname + '] ' + event.data.bookname + ": " + event.data.chapter);
+
+                let filterFirstColumnValue = event.data.book.toString();
+                let filterSecondColumnValue = event.data.chapter.toString();
+
+                let filteredData = csvArray.filter(item =>
+                    (filterFirstColumnValue === item[0] && filterSecondColumnValue === item[1])
+                );
+
+                filteredData.sort((a, b) => a[2] - b[2]);
+
+                let prefix = '<div><span class="no">';
+                let suffix = '.</span>';
+
+                let result = filteredData.map(item => [prefix + item[2] + suffix, item[3]]);
+
+
+                let concatenatedRows = result.map(row => row.join(''));
+                let finalResult = concatenatedRows.join('</div>');
+                $('.chapter').html(finalResult);
+                $('.container').hide();
+
+
+
+                var gotov = event.data.gotov;
+                if (gotov != "0") {
+                    var elements = document.querySelectorAll('.target-paragraph');
+                    elements.forEach(function (element) {
+                        element.classList.remove('target-paragraph');
+                    });
+
+                    var elements = document.querySelectorAll('.chapter div');
+                    for (var i = 0; i < elements.length; i++) {
+                        const s = elements[i].querySelector("span");
+                        var d = s.textContent.replace(/\./g, ' ');
+                        if (parseInt(d) == parseInt(gotov)) {
+                            var parentDiv = s.parentElement;
+                            parentDiv.classList.add('target-paragraph');
+                            var targetPosition = $('.target-paragraph').offset().top;
+                            $('.chapter').animate({
+                                scrollTop: targetPosition - $('.chapter').offset().top + $('.chapter').scrollTop() - 10
+                            }, 1000);
+
+                        }
+                    }
+                } else {
+                    $('.chapter').animate({ scrollTop: 0 }, 200);
+                }
+
+
+
+                var numbers = [];
+                $('.no').each(function () {
+                    var number = parseInt($(this).text().replace('.', ''));
+                    numbers.push(number);
+                });
+
+                var maxNumber = Math.max.apply(null, numbers);
+                const broadcastChannelMaxverse = new BroadcastChannel('crossMaxverse');
+                broadcastChannelMaxverse.postMessage({ version: event.data.version, versionname: event.data.versionname, bookname: event.data.bookname, book: event.data.book, chapter: event.data.chapter, maxverse: maxNumber });
+
+
+
+            }
+
+            if (version != event.data.version) {
+                version = event.data.version;
+                versionname = event.data.versionname;
+                $.ajax({
+                    url: 'csv/' + version,
+                    dataType: 'text',
+                    success: function (data) {
+                        var lines = data.split("\n");
+                        csvArray = [];
+
+                        lines.forEach(function (line) {
+
+                            let splitCsv = (str) => {
+                                let regex = /,(?=(?:[^"]*"[^"]*")*[^"]*$)/g;
+                                return str.split(regex).map(item => item.trim().replace(/^"|"$/g, ''));
+                            };
+                            var row = splitCsv(line);
+                            csvArray.push(row);
+                        });
+                        addChapter();
+
+                    },
+                    error: function () {
+                        console.error("An error occurred while loading the file.");
+                    }
+                });
+            } else {
+                addChapter();
+            }
+
+        }
+
+
+        const broadcastSlide = new BroadcastChannel('crossVerseVariables');
+        broadcastSlide.onmessage = function (event) {
+            var parm = [];
+            parm = JSON.parse(event.data.parameters);
+
+            const root = document.documentElement;
+            root.style.setProperty('--font-family', parm[0]);
+            root.style.setProperty('--section-width', `${parm[1]}px`);
+            root.style.setProperty('--section-height', `${parm[2]}px`);
+            root.style.setProperty('--container-margin-bottom', `${parm[3]}px`);
+            root.style.setProperty('--container-margin-left', `${parm[4]}px`);
+            root.style.setProperty('--title-height', `${parm[5]}px`);
+            root.style.setProperty('--title-background-color', parm[6]);
+            root.style.setProperty('--title-color', parm[7]);
+            root.style.setProperty('--title-padding-top', `${parm[8]}px`);
+            root.style.setProperty('--title-padding-left', `${parm[9]}px`);
+            root.style.setProperty('--title-padding-bottom', `${parm[10]}px`);
+            root.style.setProperty('--title-font-weight', parm[11]);
+            root.style.setProperty('--title-border', `${parm[13]} ${parm[12]}px solid`);
+            root.style.setProperty('--title-font-size', `${parm[14]}px`);
+            root.style.setProperty('--chapter-background-color', parm[15]);
+            root.style.setProperty('--chapter-color', parm[16]);
+            root.style.setProperty('--chapter-padding-top', `${parm[17]}px`);
+            root.style.setProperty('--chapter-padding-left', `${parm[18]}px`);
+            root.style.setProperty('--chapter-padding-right', `${parm[19]}px`);
+            root.style.setProperty('--chapter-font-size', `${parm[20]}px`);
+            root.style.setProperty('--chapter-font-weight', parm[21]);
+            root.style.setProperty('--chapter-border', `${parm[23]} ${parm[22]}px solid`);
+            root.style.setProperty('--chapter-line-height', `${parm[24]}px`);
+            root.style.setProperty('--no-font-size', `${parm[25]}px`);
+            root.style.setProperty('--no-color', parm[26]);
+            root.style.setProperty('--no-font-weight', parm[27]);
+            root.style.setProperty('--no-background-color', parm[28]);
+            root.style.setProperty('--no-padding-right', `${parm[29]}px`);
+        }
+
+
+        const broadcastChannelGoto = new BroadcastChannel('crossGoTo');
+        broadcastChannelGoto.onmessage = function (event) {
+            return;
+
+            var elements = document.querySelectorAll('.target-paragraph');
+            elements.forEach(function (element) {
+                element.classList.remove('target-paragraph');
+            });
+            var elements = document.querySelectorAll('.chapter div');
+            elements.forEach(function (element) {
+                element.style.display = 'block'; 
+            });
+
+            var gotov = event.data.gotov;
+
+            var elements = document.querySelectorAll('.chapter div');
+            for (var i = 0; i < elements.length; i++) {
+                const s = elements[i].querySelector("span");
+                var d = s.textContent.replace(/\./g, ' ');
+                if (parseInt(d) == parseInt(gotov)) {
+                    var parentDiv = s.parentElement;
+                    parentDiv.classList.add('target-paragraph');
+                    var targetPosition = $('.target-paragraph').offset().top;
+                    $('.chapter').animate({
+                        scrollTop: targetPosition - $('.chapter').offset().top + $('.chapter').scrollTop() - 10
+                    }, 1000);
+
+                }
+            }
+        }
+
+        const broadcastChannelGotoSelected = new BroadcastChannel('crossGoToSelected');
+        broadcastChannelGotoSelected.onmessage = function (event) {
+            $('.container').show();
+            selectedRange = event.data.gotoselected.map(item => Number(item));
+            var elements = document.querySelectorAll('.target-paragraph');
+            elements.forEach(function (element) {
+                element.classList.remove('target-paragraph');
+            });
+            var elements = document.querySelectorAll('.chapter div');
+            elements.forEach(function (element) {
+                element.style.display = 'block'; // or 'inline', 'flex', etc. as needed
+            });
+
+            var elements = document.querySelectorAll('.chapter div');
+            for (var i = 0; i < elements.length; i++) {
+                const s = elements[i].querySelector("span");
+                var d = s.textContent.replace(/\./g, ' ');
+
+                if (selectedRange.indexOf(Number(d)) === -1) {
+                    var parentDiv = s.parentElement;
+                    $(parentDiv).css('display', 'none');
+                }
+                $('.chapter').animate({ scrollTop: 0 }, 200);
+            }
+        }
+
+
+        $(document).ready(function () {
+            const savedVariables = JSON.parse(localStorage.getItem('BiblecssVerse'));
+            const root = document.documentElement;
+            root.style.setProperty('--font-family', savedVariables[0]);
+            root.style.setProperty('--section-width', `${savedVariables[1]}px`);
+            root.style.setProperty('--section-height', `${savedVariables[2]}px`);
+            root.style.setProperty('--container-margin-bottom', `${savedVariables[3]}px`);
+            root.style.setProperty('--container-margin-left', `${savedVariables[4]}px`);
+            root.style.setProperty('--title-height', `${savedVariables[5]}px`);
+            root.style.setProperty('--title-background-color', savedVariables[6]);
+            root.style.setProperty('--title-color', savedVariables[7]);
+            root.style.setProperty('--title-padding-top', `${savedVariables[8]}px`);
+            root.style.setProperty('--title-padding-left', `${savedVariables[9]}px`);
+            root.style.setProperty('--title-padding-bottom', `${savedVariables[10]}px`);
+            root.style.setProperty('--title-font-weight', savedVariables[11]);
+            root.style.setProperty('--title-border', `${savedVariables[13]} ${savedVariables[12]}px solid`);
+            root.style.setProperty('--title-font-size', `${savedVariables[14]}px`);
+            root.style.setProperty('--chapter-background-color', savedVariables[15]);
+            root.style.setProperty('--chapter-color', savedVariables[16]);
+            root.style.setProperty('--chapter-padding-top', `${savedVariables[17]}px`);
+            root.style.setProperty('--chapter-padding-left', `${savedVariables[18]}px`);
+            root.style.setProperty('--chapter-padding-right', `${savedVariables[19]}px`);
+            root.style.setProperty('--chapter-font-size', `${savedVariables[20]}px`);
+            root.style.setProperty('--chapter-font-weight', savedVariables[21]);
+            root.style.setProperty('--chapter-border', `${savedVariables[23]} ${savedVariables[22]}px solid`);
+            root.style.setProperty('--chapter-line-height', `${savedVariables[24]}px`);
+            root.style.setProperty('--no-font-size', `${savedVariables[25]}px`);
+            root.style.setProperty('--no-color', savedVariables[26]);
+            root.style.setProperty('--no-font-weight', savedVariables[27]);
+            root.style.setProperty('--no-background-color', savedVariables[28]);
+            root.style.setProperty('--no-padding-right', `${savedVariables[29]}px`);
+        });
+    </script>
+
+</body>
+
+</html>

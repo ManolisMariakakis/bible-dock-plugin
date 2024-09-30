@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Books | Bible</title>
+    <style>
+        * {
+            font-family: Arial, Helvetica, Geneva, sans-serif;
+            BACKGROUND-COLOR: #f2f2f2;
+            font-size: 12px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 3px;
+            text-align: left;
+            line-height: 1.5;
+        }
+    </style>
+    <script src="js/jquery.min.js"></script>
+</head>
+
+<body>
+    <h1>Books and Chapters</h1>
+    <table id="bibleTable">
+        <thead>
+            <tr>
+                <th>
+                    <select id="versions" name="versions"></select>
+                </th>
+                <th>Chapters</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <script>
+
+        function chapterClicked(bookname, book, chapter) {
+            event.preventDefault();
+            const broadcastChannel = new BroadcastChannel('crossChapter');
+            version = $("#versions").val();
+            versionname = $("#versions").find('option:selected').attr('data');
+            broadcastChannel.postMessage({ version: version, versionname: versionname, bookname: bookname, book: book, chapter: chapter, gotov: 0 });
+        }
+
+        $(document).ready(function () {
+
+
+            let versions = [];
+            $.ajax({
+                url: 'csv/versions.txt',
+                method: 'GET',
+                dataType: 'text',
+                data: { _: new Date().getTime() },
+                success: function (response) {
+
+                    let lines = response.split('\n');
+                    const columnNames = ['version', 'csv'];
+                    lines.forEach(line => {
+                        let columns = line.trim().split(',');
+                        if (columns.length === 2) {
+                            let rowObject = {};
+                            columnNames.forEach((name, index) => {
+                                rowObject[name] = columns[index];
+                            });
+                            versions.push(rowObject);
+                        }
+                    });
+                    const $select = $('#versions');
+                    versions.forEach(option => {
+                        $select.append(`<option value="${option.csv}" data="${option.version}">${option.version}</option>`);
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('Error loading versions.txt: ' + textStatus, errorThrown);
+                }
+            });
+
+            let bibleBooks = [];
+            $.ajax({
+                url: 'csv/bibletable.txt',
+                method: 'GET',
+                dataType: 'text',
+                success: function (response) {
+                    let lines = response.split('\n');
+                    const columnNames = ['ID', 'Name', 'Chapters'];
+                    lines.forEach(line => {
+                        let columns = line.trim().split(',');
+                        if (columns.length === 3) {
+                            let rowObject = {};
+                            columnNames.forEach((name, index) => {
+                                rowObject[name] = columns[index];
+                            });
+                            bibleBooks.push(rowObject);
+                        }
+                    });
+                    const bibleTableBody = document.querySelector("#bibleTable tbody");
+                    bibleBooks.forEach((book, index) => {
+                        const tableRow = document.createElement("tr");
+
+                        const bookNameCell = document.createElement("td");
+                        bookNameCell.textContent = `${book.Name}`;
+
+                        const chaptersCell = document.createElement("td");
+
+                        for (let chapter = 1; chapter <= book.Chapters; chapter++) {
+                            const chapterLink = document.createElement("a");
+                            chapterLink.textContent = chapter;
+                            chapterLink.href = "#"
+                            chapterLink.onclick = function () {
+                                chapterClicked(book.Name, index + 1, chapter);
+                            };
+
+                            if (chapter < book.Chapters) {
+                                chapterLink.textContent += " ";
+                            }
+
+                            chaptersCell.appendChild(chapterLink);
+                        }
+
+                        tableRow.appendChild(bookNameCell);
+                        tableRow.appendChild(chaptersCell);
+
+                        bibleTableBody.appendChild(tableRow);
+                    });
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    console.log('Error loading bibletable.txt: ' + textStatus, errorThrown);
+                }
+            });
+
+
+        });
+
+
+    </script>
+</body>
+
+</html>
