@@ -34,7 +34,10 @@ Follow these steps to install the **Bible Dock Plugin** for OBS Studio:
 - Adjust the appearance (font size, colors, margins, etc.) of the Bible text, using the `chapter_variables.html` and `verse_variables.html` dock pages.
 - Prepare Bible Book Names: 
   - Update the `bibletable.txt` file to include Bible book names in your desired language. Ensure the file follows the correct format with the appropriate book numbers, names, and the number of chapters for each book.
-- Add Additional Bible Versions, generating new CSV files (using tools like **theWord.net**) and update the `versions.txt` file.
+- Choose Bible Versions:
+  - Bible texts compatible with various versions and languages are available in the [zefaniaXML2CSV](https://github.com/ManolisMariakakis/Zefania-Bibles-XML2CSV-Preservation/tree/main/zefaniaXML2CSV) folder.
+  - You can generate new CSV files using tools like `theWord.net`
+  - Ensure that the `versions.txt` file is updated accordingly.
 
 Below is an example of how the dock pages appear in OBS:
 
@@ -225,7 +228,7 @@ The `Verse Page Variables` offers extensive customization options through CSS st
 
 ### Available Bible Texts
 
-Before generating Bible text files, users should note that there are already Bible texts compatible with various versions and languages available in the folder [zefaniaXML2CSV](https://github.com/ManolisMariakakis/Zefania-Bibles-XML2CSV-Preservation/tree/main/zefaniaXML2CSV). This resource provides a convenient option for users looking for pre-formatted Bible texts that ensure compatibility with the plugin.
+Before generating Bible text files, users should note that there are already Bible texts compatible with various versions and languages available in the [zefaniaXML2CSV](https://github.com/ManolisMariakakis/Zefania-Bibles-XML2CSV-Preservation/tree/main/zefaniaXML2CSV) folder. This resource provides a convenient option for users looking for pre-formatted Bible texts that ensure compatibility with the plugin.
 
 ### Text Generator from theWord.net
 
