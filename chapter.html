@@ -83,7 +83,12 @@
             font-weight: var(--chapter-font-weight);
             border: var(--chapter-border);
             box-sizing: border-box;
-            overflow-y: auto;
+            overflow-y: scroll;
+        }
+
+        .chapter::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
         }
 
         .chapter div {
